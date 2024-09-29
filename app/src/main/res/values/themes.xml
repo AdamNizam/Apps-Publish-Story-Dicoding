@@ -6,7 +6,9 @@
 
         <item name="colorPrimary">@color/gold</item>
         <item name="colorPrimaryVariant">@color/white</item>
-        <item name="colorOnPrimary">@color/blue</item>
+        <item name="colorOnSecondary">@color/blue</item>
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
     <style name="Theme.StoryApps" parent="Base.Theme.StoryApps" />
