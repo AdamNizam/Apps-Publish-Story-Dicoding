@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">StoryApps</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="logo_login">Logo Login</string>
+</resources>
