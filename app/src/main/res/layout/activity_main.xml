@@ -12,7 +12,7 @@
         android:id="@+id/logoMenu1"
         android:layout_width="0dp"
         android:layout_height="300dp"
-        android:src="@drawable/pinture1"
+        android:src="@drawable/image_kurikulum_global"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -53,20 +53,30 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:alpha="0"
-        android:backgroundTint="@color/gold"
-        android:text="@string/learn_now"
+        android:text="@string/masuk"
+        app:layout_constraintBottom_toTopOf="@+id/menu2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:alpha="0"
+        android:text="@string/dafar"
         app:layout_constraintBottom_toTopOf="@+id/menu2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="10dp"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_default" />
+        app:srcCompat="@drawable/image_dicoding"/>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

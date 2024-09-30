@@ -9,7 +9,9 @@
     <string name="register">Register</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="full_name">Full Name</string>
-    <string name="learn_now">Belajar Sekarang</string>
-    <string name="title">Your Enjoy Coding !</string>
-    <string name="desc">Ini Adalah Apps Publish Kisah Anda Selama Coding</string>
+    <string name="learn_now">Login</string>
+    <string name="title">Selamat Datang Di Dicoding Story !</string>
+    <string name="desc"> Mau Berbagi Ilmu Tentang Android, IOS, Mechine Learning, Front End, Back End Dan bidang IT lainya? Di Dicoding Story Aja</string>
+    <string name="masuk">Masuk</string>
+    <string name="dafar">Dafar</string>
 </resources>

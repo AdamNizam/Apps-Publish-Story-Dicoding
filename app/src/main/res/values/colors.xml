@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#ffffff</color>
-    <color name="gold">#b28b84</color>
-    <color name="blue">#4b5364</color>
-    <color name="pink">#F06292</color>
+    <color name="white">#F5F5F7</color>
     <color name="navi">#2D3D4F</color>
 </resources>
