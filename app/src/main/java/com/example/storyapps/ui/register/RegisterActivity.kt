@@ -2,6 +2,7 @@ package com.example.storyapps.ui.register
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -59,8 +60,7 @@ class RegisterActivity : AppCompatActivity() {
             inputText.length >= 8
         }
     }
-
-    private fun registerUser(){
+    private fun registerUser() {
         val fullName = binding.nameEditText.text.toString().trim()
         val email = binding.emailEditText.text.toString().trim()
         val password = binding.passwordEditText.text.toString().trim()
@@ -72,26 +72,29 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.registerButton.isEnabled = false
         binding.loadingProgressBar.visibility = View.VISIBLE
-
-        registerViewModel.register(fullName, email, password) { response ->
-            runOnUiThread {
-                binding.loadingProgressBar.visibility = View.GONE
-                binding.registerButton.isEnabled = true
-                if (response.error) {
-                    binding.nameEditText.text?.clear()
-                    binding.emailEditText.text?.clear()
-                    binding.passwordEditText.text?.clear()
-                    Toast.makeText(this, "Register failed: ${response.message}", Toast.LENGTH_SHORT).show()
-                } else {
-                    binding.nameEditText.text?.clear()
-                    binding.emailEditText.text?.clear()
-                    binding.passwordEditText.text?.clear()
-                    Toast.makeText(this, "Register successful!", Toast.LENGTH_SHORT).show()
-                    toLoginPage()
+        val handler = Handler(mainLooper)
+        handler.postDelayed({
+            registerViewModel.register(fullName, email, password) { response ->
+                runOnUiThread {
+                    binding.registerButton.isEnabled = true
+                    if (response.error) {
+                        binding.nameEditText.text?.clear()
+                        binding.emailEditText.text?.clear()
+                        binding.passwordEditText.text?.clear()
+                        Toast.makeText(this, "Register failed: ${response.message}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        binding.nameEditText.text?.clear()
+                        binding.emailEditText.text?.clear()
+                        binding.passwordEditText.text?.clear()
+                        Toast.makeText(this, "Register successful!", Toast.LENGTH_SHORT).show()
+                        toLoginPage()
+                        finish()
+                    }
                 }
             }
-        }
+        }, 2000)
     }
+
     private fun addTextWatcher(
         editText: EditText,
         inputLayout: TextInputLayout,

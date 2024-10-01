@@ -88,7 +88,7 @@
         app:layout_constraintWidth_percent="0.8" />
 
     <!-- ProgressBar untuk loading -->
-    <com.google.android.material.progressindicator.CircularProgressIndicator
+    <ProgressBar
         android:id="@+id/loadingProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
