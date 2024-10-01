@@ -69,7 +69,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.8" />
-
     <!-- ProgressBar untuk loading -->
     <ProgressBar
         android:id="@+id/loadingProgressBar"

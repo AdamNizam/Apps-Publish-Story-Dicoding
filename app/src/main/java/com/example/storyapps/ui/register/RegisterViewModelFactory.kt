@@ -2,9 +2,9 @@ package com.example.storyapps.ui.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.storyapps.repository.UserRegisterRepository
+import com.example.storyapps.repository.RegisterRepository
 
-class RegisterViewModelFactory (private val userRegisterRepository: UserRegisterRepository) : ViewModelProvider.Factory {
+class RegisterViewModelFactory (private val userRegisterRepository: RegisterRepository) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

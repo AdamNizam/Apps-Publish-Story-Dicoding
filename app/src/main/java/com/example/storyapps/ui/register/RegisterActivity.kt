@@ -88,11 +88,10 @@ class RegisterActivity : AppCompatActivity() {
                         binding.passwordEditText.text?.clear()
                         Toast.makeText(this, "Register successful!", Toast.LENGTH_SHORT).show()
                         toLoginPage()
-                        finish()
                     }
                 }
             }
-        }, 2000)
+        }, 1000)
     }
 
     private fun addTextWatcher(
@@ -120,5 +119,6 @@ class RegisterActivity : AppCompatActivity() {
     private fun toLoginPage(){
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }
