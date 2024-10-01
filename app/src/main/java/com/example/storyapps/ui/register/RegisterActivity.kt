@@ -1,4 +1,4 @@
-package com.example.storyapps.ui
+package com.example.storyapps.ui.register
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,8 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.storyapps.R
 import com.example.storyapps.databinding.ActivityRegisterBinding
+import com.example.storyapps.ui.login.LoginActivity
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding

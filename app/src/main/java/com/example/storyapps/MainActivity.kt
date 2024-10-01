@@ -3,14 +3,13 @@ package com.example.storyapps
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.storyapps.databinding.ActivityMainBinding
-import com.example.storyapps.ui.LoginActivity
-import com.example.storyapps.ui.RegisterActivity
+import com.example.storyapps.ui.login.LoginActivity
+import com.example.storyapps.ui.register.RegisterActivity
 
 class MainActivity : AppCompatActivity() {
 
