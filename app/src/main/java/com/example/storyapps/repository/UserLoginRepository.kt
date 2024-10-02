@@ -2,7 +2,7 @@ package com.example.storyapps.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.storyapps.data.api.ApiService
+import com.example.storyapps.data.api.retrofit.ApiService
 import com.example.storyapps.data.api.response.LoginResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

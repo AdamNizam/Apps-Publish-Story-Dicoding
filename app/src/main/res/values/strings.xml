@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StoryApps</string>
+    <string name="app_name">Apps Story</string>
     <string name="login">Login</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
     <string name="email">Email</string>
@@ -14,4 +14,11 @@
     <string name="desc"> Mau Berbagi Ilmu Tentang Android, IOS, Mechine Learning, Front End, Back End Dan bidang IT lainya? Di Dicoding Story Aja</string>
     <string name="masuk">Masuk</string>
     <string name="dafar">Dafar</string>
+    <string name="nama_anda">Nama Anda</string>
+    <string name="itemfavorit">itemFavorit</string>
+    <string name="titel">Title / Judul</string>
+    <string name="list_daftar_favorit">List Daftar Favorit</string>
+    <string name="logout">Logout</string>
+    <string name="tambah_cerita">Tambah Cerita</string>
+    <string name="deskripsi">Deskripsi</string>
 </resources>

@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.storyapps.databinding.ActivityLoginBinding
 import com.example.storyapps.di.Injection
 import com.example.storyapps.ui.register.RegisterActivity
+import com.example.storyapps.ui.story.StoryActivity
 import com.google.android.material.textfield.TextInputLayout
 import retrofit2.HttpException
 
@@ -78,13 +79,14 @@ class LoginActivity : AppCompatActivity() {
                 val token = response.loginResult.token
                 Log.d("LoginActivity", "Token yang diterima: $token")
 
-                // Menampilkan token dengan Toast
                 Toast.makeText(this, "Token: $token", Toast.LENGTH_LONG).show()
 
-                // Simpan token ke SharedPreferences (opsional)
                 saveToken(token)
                 binding.emailEditText.text?.clear()
                 binding.passwordEditText.text?.clear()
+
+                val intent = Intent(this, StoryActivity::class.java)
+                startActivity(intent)
             }
 
             result.onFailure { throwable ->
@@ -165,7 +167,7 @@ class LoginActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("auth_token", token)
-        editor.apply() // Simpan token
+        editor.apply()
     }
 
 

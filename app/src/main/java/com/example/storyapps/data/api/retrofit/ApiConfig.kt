@@ -1,4 +1,4 @@
-package com.example.storyapps.data.api
+package com.example.storyapps.data.api.retrofit
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
