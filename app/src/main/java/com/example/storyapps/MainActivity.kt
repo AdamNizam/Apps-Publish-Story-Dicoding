@@ -3,7 +3,9 @@ package com.example.storyapps
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding.button.setOnClickListener { navigateTo(LoginActivity::class.java) }
         binding.button1.setOnClickListener { navigateTo(RegisterActivity::class.java) }
     }
+
     private fun <T> Activity.navigateTo(targetActivity: Class<T>) {
         val intent = Intent(this, targetActivity)
         startActivity(intent)

@@ -17,8 +17,12 @@
     <string name="nama_anda">Nama Anda</string>
     <string name="itemfavorit">itemFavorit</string>
     <string name="titel">Title / Judul</string>
-    <string name="list_daftar_favorit">List Daftar Favorit</string>
+    <string name="list_daftar_favorit">Daftar Favorit</string>
     <string name="logout">Logout</string>
     <string name="tambah_cerita">Tambah Cerita</string>
     <string name="deskripsi">Deskripsi</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="description">Description</string>
+    <string name="upload">Upload</string>
 </resources>
