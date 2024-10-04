@@ -7,17 +7,16 @@
     android:id="@+id/uploadActivity"
     tools:context=".ui.story.upload.UploadActivity">
 
-
-    <!-- Image Placeholder -->
+     <!-- Image Placeholder -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
         android:layout_margin="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
+        
         <ImageView
             android:id="@+id/imageViewPlaceholder"
             android:layout_width="match_parent"
