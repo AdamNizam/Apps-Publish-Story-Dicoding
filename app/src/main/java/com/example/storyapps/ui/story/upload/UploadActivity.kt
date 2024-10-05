@@ -14,13 +14,24 @@ import com.example.storyapps.databinding.ActivityUploadBinding
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+import com.example.storyapps.R
 import android.view.OrientationEventListener
 import android.view.Surface
+import android.view.View
 import androidx.camera.core.ImageCapture
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.example.storyapps.data.api.response.UploadResponse
+import com.example.storyapps.data.api.retrofit.ApiConfig
 import com.example.storyapps.ui.story.upload.CameraActivity.Companion.CAMERAX_RESULT
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 
 class UploadActivity : AppCompatActivity() {
 
@@ -29,6 +40,8 @@ class UploadActivity : AppCompatActivity() {
     private var currentImageUri: Uri? = null
 
     private var imageCapture: ImageCapture? = null
+
+    private lateinit var utils: Utils
 
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
@@ -83,8 +96,13 @@ class UploadActivity : AppCompatActivity() {
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
+
+        utils = Utils()
+        Log.d("UploadActivity", "Utils initialized: $utils")
+
         binding.buttonGallery.setOnClickListener { startGallery() }
         binding.buttonCamera.setOnClickListener { startCamera() }
+        binding.buttonUpload.setOnClickListener { uploadImage() }
 
 
     }
@@ -126,11 +144,40 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
-        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
-    }
+        currentImageUri?.let { uri ->
+            val imageFile = utils.uriToFile(uri, this)
+            Log.d("Image File", "showImage: ${imageFile.path}")
+            val description = "Ini adalah deksripsi gambar"
 
-    private fun isPhotoPickerAvailable(): Boolean {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            showLoading(true)
+
+            val requestBody = description.toRequestBody("text/plain".toMediaType())
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "photo",
+                imageFile.name,
+                requestImageFile
+            )
+            lifecycleScope.launch {
+                try {
+                    val apiService = ApiConfig.getApiService()
+                    val successResponse = apiService.uploadImage(multipartBody, requestBody)
+                    showToast(successResponse.message)
+                    showLoading(false)
+                } catch (e: HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    val errorResponse = Gson().fromJson(errorBody, UploadResponse::class.java)
+                    showToast(errorResponse.message)
+                    showLoading(false)
+                }
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
+    }
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onStart() {

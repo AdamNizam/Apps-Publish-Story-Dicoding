@@ -170,7 +170,6 @@ class LoginActivity : AppCompatActivity() {
         editor.apply()
     }
 
-
     private fun toRegisterPage(){
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
