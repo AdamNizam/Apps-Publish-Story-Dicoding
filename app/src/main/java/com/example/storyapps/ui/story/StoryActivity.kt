@@ -3,10 +3,8 @@ package com.example.storyapps.ui.story
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -54,8 +52,6 @@ class StoryActivity : AppCompatActivity() {
             if (response?.listStory != null) {
                 storyAdapter = StoryAdapter(response.listStory.map { it!! })
                 binding.recyclerView.adapter = storyAdapter
-            } else {
-                // Tangani kesalahan atau tampilkan pesan kesalahan di sini
             }
         }
         CoroutineScope(Dispatchers.IO).launch {

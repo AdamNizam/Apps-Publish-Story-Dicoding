@@ -17,6 +17,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.storyapps.data.createCustomTempFile
 import com.example.storyapps.databinding.ActivityCameraBinding
 
 class CameraActivity : AppCompatActivity() {
@@ -107,11 +108,9 @@ class CameraActivity : AppCompatActivity() {
     }
     private fun takePhoto() {
 
-        val utils = Utils()
-
         val imageCapture = imageCapture ?: return
 
-        val photoFile = utils.createCustomTempFile(application)
+        val photoFile = createCustomTempFile(application)
 
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
         imageCapture.takePicture(

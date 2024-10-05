@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.storyapps.databinding.ActivityUploadBinding
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import com.example.storyapps.R
@@ -21,17 +22,23 @@ import android.view.View
 import androidx.camera.core.ImageCapture
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.storyapps.data.api.response.UploadResponse
 import com.example.storyapps.data.api.retrofit.ApiConfig
+import com.example.storyapps.data.reduceFileImage
+import com.example.storyapps.data.uriToFile
+import com.example.storyapps.repository.UserLoginRepository
 import com.example.storyapps.ui.story.upload.CameraActivity.Companion.CAMERAX_RESULT
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+
 
 class UploadActivity : AppCompatActivity() {
 
@@ -41,7 +48,9 @@ class UploadActivity : AppCompatActivity() {
 
     private var imageCapture: ImageCapture? = null
 
-    private lateinit var utils: Utils
+    private lateinit var userLoginRepository: UserLoginRepository
+
+    private val Context.dataStore by preferencesDataStore(name = "app_prefs")
 
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
@@ -97,8 +106,13 @@ class UploadActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
 
-        utils = Utils()
-        Log.d("UploadActivity", "Utils initialized: $utils")
+        // Inisialisasi UserLoginRepository sebagai properti kelas
+        val apiService = ApiConfig.getApiService()
+        userLoginRepository = UserLoginRepository(apiService, this.dataStore)
+        lifecycleScope.launch {
+            val token = userLoginRepository.getToken().first()
+            Log.d("UploadImage", "Token: $token")
+        }
 
         binding.buttonGallery.setOnClickListener { startGallery() }
         binding.buttonCamera.setOnClickListener { startCamera() }
@@ -145,11 +159,14 @@ class UploadActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         currentImageUri?.let { uri ->
-            val imageFile = utils.uriToFile(uri, this)
-            Log.d("Image File", "showImage: ${imageFile.path}")
-            val description = "Ini adalah deksripsi gambar"
+            Log.d("UploadImage", "URI: $uri") // Log URI gambar
+
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            Log.d("UploadImage", "Image File Path: ${imageFile.path}") // Log path file gambar
+            val description = "Ini adalah deskripsi gambar"
 
             showLoading(true)
+            Log.d("UploadImage", "Loading started")
 
             val requestBody = description.toRequestBody("text/plain".toMediaType())
             val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
@@ -158,24 +175,44 @@ class UploadActivity : AppCompatActivity() {
                 imageFile.name,
                 requestImageFile
             )
+
             lifecycleScope.launch {
                 try {
+                    Log.d("UploadImage", "Fetching token from DataStore")
+                    val token = userLoginRepository.getToken().first()
+                    Log.d("UploadImage", "Token: $token") // Log token yang diambil
+
                     val apiService = ApiConfig.getApiService()
-                    val successResponse = apiService.uploadImage(multipartBody, requestBody)
+                    Log.d("UploadImage", "Making API call to upload image")
+                    val successResponse = apiService.uploadImage("Bearer $token", multipartBody, requestBody)
+
+                    Log.d("UploadImage", "Upload successful: ${successResponse.message}")
                     showToast(successResponse.message)
                     showLoading(false)
                 } catch (e: HttpException) {
+                    Log.e("UploadImage", "HTTP Exception: ${e.message()}", e) // Log HTTP exception
                     val errorBody = e.response()?.errorBody()?.string()
                     val errorResponse = Gson().fromJson(errorBody, UploadResponse::class.java)
                     showToast(errorResponse.message)
                     showLoading(false)
+                } catch (e: Exception) {
+                    Log.e("UploadImage", "General Exception: ${e.message}", e) // Log general exception
+                    showToast("Error: ${e.message}")
+                    showLoading(false)
                 }
             }
-        } ?: showToast(getString(R.string.empty_image_warning))
+        } ?: run {
+            Log.w("UploadImage", "No image selected") // Log peringatan jika tidak ada gambar
+            showToast(getString(R.string.empty_image_warning))
+        }
     }
+
+
+
     private fun showLoading(isLoading: Boolean) {
         binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
@@ -184,6 +221,7 @@ class UploadActivity : AppCompatActivity() {
         super.onStart()
         orientationEventListener.enable()
     }
+
     override fun onStop() {
         super.onStop()
         orientationEventListener.disable()

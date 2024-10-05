@@ -40,10 +40,11 @@ interface ApiService {
         @Header("Authorization") token: String
     ): StoryResponse
 
-        @Multipart
-        @POST("stories/guest")
-        suspend fun uploadImage(
-            @Part file: MultipartBody.Part,
-            @Part("description") description: RequestBody,
-        ): UploadResponse
+    @Multipart
+    @POST("stories")
+    suspend fun uploadImage(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody,
+    ): UploadResponse
 }

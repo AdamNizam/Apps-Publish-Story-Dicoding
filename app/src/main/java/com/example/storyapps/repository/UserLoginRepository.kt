@@ -1,5 +1,6 @@
 package com.example.storyapps.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.storyapps.data.api.retrofit.ApiService
@@ -18,6 +19,7 @@ class UserLoginRepository(private val apiService: ApiService, private val dataSt
     suspend fun saveToken(token: String) {
         dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
+            Log.d("UserLoginRepository", "Token yang disimpan: $token")
         }
     }
 
