@@ -30,9 +30,4 @@ object Injection {
         return StoryRepository(apiService, dataStore)
     }
 
-    fun provideLoginViewModelFactory(context: Context): LoginViewModelFactory {
-        val userLoginRepository = provideUserLoginRepository(context)
-        return LoginViewModelFactory(userLoginRepository)
-    }
-
 }

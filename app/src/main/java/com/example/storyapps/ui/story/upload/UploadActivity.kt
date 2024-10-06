@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.storyapps.databinding.ActivityUploadBinding
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import com.example.storyapps.R
@@ -22,12 +21,12 @@ import android.view.View
 import androidx.camera.core.ImageCapture
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.example.storyapps.data.api.response.UploadResponse
 import com.example.storyapps.data.api.retrofit.ApiConfig
 import com.example.storyapps.data.reduceFileImage
 import com.example.storyapps.data.uriToFile
+import com.example.storyapps.di.Injection
 import com.example.storyapps.repository.UserLoginRepository
 import com.example.storyapps.ui.story.upload.CameraActivity.Companion.CAMERAX_RESULT
 import com.google.gson.Gson
@@ -49,8 +48,6 @@ class UploadActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
 
     private lateinit var userLoginRepository: UserLoginRepository
-
-    private val Context.dataStore by preferencesDataStore(name = "app_prefs")
 
     companion object {
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
@@ -105,10 +102,7 @@ class UploadActivity : AppCompatActivity() {
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
-
-        // Inisialisasi UserLoginRepository sebagai properti kelas
-        val apiService = ApiConfig.getApiService()
-        userLoginRepository = UserLoginRepository(apiService, this.dataStore)
+        userLoginRepository = Injection.provideUserLoginRepository(this)
         lifecycleScope.launch {
             val token = userLoginRepository.getToken().first()
             Log.d("UploadImage", "Token: $token")
@@ -158,6 +152,7 @@ class UploadActivity : AppCompatActivity() {
     }
 
     private fun uploadImage() {
+        showLoading(true)
         currentImageUri?.let { uri ->
             Log.d("UploadImage", "URI: $uri") // Log URI gambar
 
@@ -165,7 +160,6 @@ class UploadActivity : AppCompatActivity() {
             Log.d("UploadImage", "Image File Path: ${imageFile.path}") // Log path file gambar
             val description = "Ini adalah deskripsi gambar"
 
-            showLoading(true)
             Log.d("UploadImage", "Loading started")
 
             val requestBody = description.toRequestBody("text/plain".toMediaType())
@@ -178,12 +172,11 @@ class UploadActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-                    Log.d("UploadImage", "Fetching token from DataStore")
+
                     val token = userLoginRepository.getToken().first()
-                    Log.d("UploadImage", "Token: $token") // Log token yang diambil
+                    Log.d("UploadImage", "Token: $token")
 
                     val apiService = ApiConfig.getApiService()
-                    Log.d("UploadImage", "Making API call to upload image")
                     val successResponse = apiService.uploadImage("Bearer $token", multipartBody, requestBody)
 
                     Log.d("UploadImage", "Upload successful: ${successResponse.message}")
@@ -195,8 +188,8 @@ class UploadActivity : AppCompatActivity() {
                     val errorResponse = Gson().fromJson(errorBody, UploadResponse::class.java)
                     showToast(errorResponse.message)
                     showLoading(false)
+
                 } catch (e: Exception) {
-                    Log.e("UploadImage", "General Exception: ${e.message}", e) // Log general exception
                     showToast("Error: ${e.message}")
                     showLoading(false)
                 }
