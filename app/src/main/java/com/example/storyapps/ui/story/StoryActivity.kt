@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapps.databinding.ActivityStoryBinding
 import com.example.storyapps.di.Injection
@@ -55,6 +56,7 @@ class StoryActivity : AppCompatActivity() {
 
         binding.recyclerView.adapter = storyAdapter
         binding.carouselRecyclerView.adapter = carouselAdapter
+
 
         observeStories()
 

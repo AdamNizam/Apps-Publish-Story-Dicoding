@@ -26,4 +26,6 @@
     <string name="description">Description</string>
     <string name="upload">Upload</string>
     <string name="empty_image_warning">Please select an image before proceeding.</string>
+    <string name="Date">Date</string>
+    <string name="_4_5_413">4.5 (413)</string>
 </resources>
