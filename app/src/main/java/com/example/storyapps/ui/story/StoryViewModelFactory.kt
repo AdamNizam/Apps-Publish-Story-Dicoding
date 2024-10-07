@@ -1,9 +1,8 @@
 package com.example.storyapps.ui.story
 
-import com.example.storyapps.repository.StoryRepository
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.storyapps.repository.StoryRepository
 
 class StoryViewModelFactory(private val repository: StoryRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

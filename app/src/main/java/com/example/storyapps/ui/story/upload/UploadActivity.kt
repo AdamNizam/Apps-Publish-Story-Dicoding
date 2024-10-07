@@ -158,7 +158,7 @@ class UploadActivity : AppCompatActivity() {
 
             val imageFile = uriToFile(uri, this).reduceFileImage()
             Log.d("UploadImage", "Image File Path: ${imageFile.path}") // Log path file gambar
-            val description = "Ini adalah deskripsi gambar"
+            val description = binding.editTextDescription.text.toString()
 
             Log.d("UploadImage", "Loading started")
 
@@ -172,7 +172,6 @@ class UploadActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-
                     val token = userLoginRepository.getToken().first()
                     Log.d("UploadImage", "Token: $token")
 
@@ -182,6 +181,8 @@ class UploadActivity : AppCompatActivity() {
                     Log.d("UploadImage", "Upload successful: ${successResponse.message}")
                     showToast(successResponse.message)
                     showLoading(false)
+                    finish()
+
                 } catch (e: HttpException) {
                     Log.e("UploadImage", "HTTP Exception: ${e.message()}", e) // Log HTTP exception
                     val errorBody = e.response()?.errorBody()?.string()
@@ -199,8 +200,6 @@ class UploadActivity : AppCompatActivity() {
             showToast(getString(R.string.empty_image_warning))
         }
     }
-
-
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE

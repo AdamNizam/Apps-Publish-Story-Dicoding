@@ -10,20 +10,26 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapps.databinding.ActivityStoryBinding
 import com.example.storyapps.di.Injection
 import com.example.storyapps.ui.story.adapter.StoryAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.storyapps.R
+import com.example.storyapps.repository.UserLoginRepository
+import com.example.storyapps.ui.login.LoginActivity
+import com.example.storyapps.ui.story.adapter.CarouselAdapter
 import com.example.storyapps.ui.story.detail.DetailActivity
 import com.example.storyapps.ui.story.upload.UploadActivity
+import com.google.android.material.carousel.CarouselLayoutManager
 
 class StoryActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityStoryBinding
     private lateinit var storyAdapter: StoryAdapter
+    private lateinit var carouselAdapter: CarouselAdapter
+    private lateinit var userLoginRepository: UserLoginRepository
     private val storyViewModel: StoryViewModel by viewModels {
         StoryViewModelFactory(Injection.provideStoryRepository(this))
     }
@@ -33,14 +39,22 @@ class StoryActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.mainStory) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.storyActivity) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        userLoginRepository = Injection.provideUserLoginRepository(this)
+
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.carouselRecyclerView.layoutManager = CarouselLayoutManager()
+
+        carouselAdapter = CarouselAdapter(emptyList())
         storyAdapter = StoryAdapter(emptyList())
+
         binding.recyclerView.adapter = storyAdapter
+        binding.carouselRecyclerView.adapter = carouselAdapter
 
         observeStories()
 
@@ -48,14 +62,9 @@ class StoryActivity : AppCompatActivity() {
     }
 
     private fun observeStories() {
-        storyViewModel.getStories().observe(this) { response ->
-            if (response?.listStory != null) {
-                storyAdapter = StoryAdapter(response.listStory.map { it!! })
-                binding.recyclerView.adapter = storyAdapter
-            }
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            storyViewModel.getStories()
+        storyViewModel.stories.observe(this) { storyList ->
+            storyAdapter.updateStories(storyList ?: emptyList())
+            carouselAdapter.updateStories(storyList ?: emptyList())
         }
     }
 
@@ -72,8 +81,17 @@ class StoryActivity : AppCompatActivity() {
             R.id.listItemFavorit -> {
                 movePage(DetailActivity::class.java)
             }
+            R.id.logoutButton -> { logout()}
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun logout() {
+        lifecycleScope.launch {
+            userLoginRepository.deleteToken()
+            movePage(LoginActivity::class.java)
+            finish()
+        }
     }
 
     private fun <T> Activity.movePage(objectiveActivity: Class<T>){
@@ -81,5 +99,11 @@ class StoryActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        storyViewModel.fetchStories()
+    }
+
 
 }

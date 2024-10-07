@@ -1,5 +1,6 @@
 package com.example.storyapps.ui.story.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,9 +42,9 @@ class StoryAdapter(private var stories: List<ListStoryItem>) : RecyclerView.Adap
 
     override fun getItemCount(): Int = stories.size
 
-//    // Metode untuk memperbarui daftar cerita
-//    fun updateStories(newStories: List<Story>) {
-//        stories = newStories
-////        notifyDataSetChanged()
-//    }
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateStories(newStories: List<ListStoryItem>) {
+        stories = newStories
+        notifyDataSetChanged()
+    }
 }

@@ -20,8 +20,4 @@ class LoginViewModel (private val userLoginRepository: UserLoginRepository): Vie
             emit(Result.failure(e))
         }
     }
-
-    fun getToken(): Flow<String?> {
-        return userLoginRepository.getToken()
-    }
 }

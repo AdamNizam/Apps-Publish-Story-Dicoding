@@ -1,6 +1,7 @@
 package com.example.storyapps.ui.login
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -38,79 +39,16 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.loginMain) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.loginActivity) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Set tombol login tidak aktif di awal
         binding.loginButton.isEnabled = false
-
-        // Setup validasi input form login
         setupLoginFormValidation()
-
-        binding.registerTextView.setOnClickListener { toRegisterPage() }
-
-        binding.loginButton.setOnClickListener {
-            loginUser()
-        }
-    }
-
-    private fun loginUser(){
-        val email = binding.emailEditText.text.toString().trim()
-        val password = binding.passwordEditText.text.toString().trim()
-
-        if (email.isEmpty()) {
-            binding.emailEditText.error = " Email Anda Salah"
-            return
-        }
-        if (password.isEmpty()) {
-            binding.passwordEditText.error = "Password Anda Salah"
-            return
-        }
-        binding.loadingProgressBar.visibility = View.VISIBLE
-
-        loginViewModel.login(email, password).observe(this) { result ->
-
-            result.onSuccess { response ->
-
-                binding.loadingProgressBar.visibility = View.GONE
-                val token = response.loginResult.token
-                Log.d("LoginActivity", "Token yang diterima: $token")
-
-                Toast.makeText(this, "Token: $token", Toast.LENGTH_LONG).show()
-
-                saveToken(token)
-                binding.emailEditText.text?.clear()
-                binding.passwordEditText.text?.clear()
-
-                val intent = Intent(this, StoryActivity::class.java)
-                startActivity(intent)
-            }
-
-            result.onFailure { throwable ->
-                binding.loadingProgressBar.visibility = View.GONE
-
-                Toast.makeText(this, throwable.message, Toast.LENGTH_SHORT).show()
-
-                Log.e("LoginActivity", "Login gagal: ${throwable.message}")
-
-                if (throwable is HttpException) {
-                    val errorBody = throwable.response()?.errorBody()?.string()
-                    Log.e("LoginActivity", "Response body: $errorBody")
-                }
-            }
-        }
-
-    }
-
-    private fun onLoginInputChanged() {
-        val email = binding.emailEditText.text.toString().trim()
-        val password = binding.passwordEditText.text.toString().trim()
-        val isEmailValid = email.contains("@gmail.com")
-        val isPasswordValid = password.length >= 8
-        binding.loginButton.isEnabled = isEmailValid && isPasswordValid
+        binding.registerTextView.setOnClickListener { navigateTo(RegisterActivity::class.java) }
+        binding.loginButton.setOnClickListener { loginUser() }
     }
 
     private fun setupLoginFormValidation() {
@@ -163,6 +101,54 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun loginUser(){
+        val email = binding.emailEditText.text.toString().trim()
+        val password = binding.passwordEditText.text.toString().trim()
+
+        if (email.isEmpty()) {
+            binding.emailEditText.error = " Email Anda Salah"
+            return
+        }
+        if (password.isEmpty()) {
+            binding.passwordEditText.error = "Password Anda Salah"
+            return
+        }
+
+        binding.loadingProgressBar.visibility = View.VISIBLE
+        loginViewModel.login(email, password).observe(this)
+        { result ->
+            result.onSuccess { response ->
+                val token = response.loginResult.token
+                saveToken(token)
+                val intent = Intent(this, StoryActivity::class.java)
+                Toast.makeText(this, "Login Succesfully", Toast.LENGTH_LONG).show()
+                startActivity(intent)
+                finish()
+            }
+            result.onFailure { throwable ->
+                binding.loadingProgressBar.visibility = View.GONE
+
+                Toast.makeText(this, throwable.message, Toast.LENGTH_SHORT).show()
+
+                Log.e("LoginActivity", "Login gagal: ${throwable.message}")
+
+                if (throwable is HttpException) {
+                    val errorBody = throwable.response()?.errorBody()?.string()
+                    Log.e("LoginActivity", "Response body: $errorBody")
+                }
+            }
+        }
+
+    }
+
+    private fun onLoginInputChanged() {
+        val email = binding.emailEditText.text.toString().trim()
+        val password = binding.passwordEditText.text.toString().trim()
+        val isEmailValid = email.contains("@gmail.com")
+        val isPasswordValid = password.length >= 8
+        binding.loginButton.isEnabled = isEmailValid && isPasswordValid
+    }
+
     private fun saveToken(token: String) {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -170,8 +156,8 @@ class LoginActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun toRegisterPage(){
-        val intent = Intent(this, RegisterActivity::class.java)
+    private fun <T> Activity.navigateTo(targetActivity: Class<T>) {
+        val intent = Intent(this, targetActivity)
         startActivity(intent)
     }
 
